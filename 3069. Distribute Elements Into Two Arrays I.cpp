@@ -1,3 +1,6 @@
+#include<iostream>
+using namespace std ;
+#include<vector>;
 class Solution {
 public:
     vector<int> resultArray(vector<int>& nums) {
@@ -24,3 +27,13 @@ public:
         return result;
     }
 };
+
+int main(){
+    vector<int> nums = {5,4,3,8};
+    Solution s;
+vector<int> ans = s.resultArray(nums);
+ for(int x : ans)
+     cout<<x<<" ";
+
+return 0;
+}
