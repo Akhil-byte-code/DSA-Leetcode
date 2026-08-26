@@ -1,32 +1,66 @@
 class Solution {
 public:
     string shortestBeautifulSubstring(string s, int k) {
-        // brute force approach 
+        // // brute force approach 
+        // int n = s.length();
+
+        // for (int len = k; len <= n; len++) {
+        //     string result = "";
+
+        //     for (int start = 0; start <= n - len; start++) {
+        //         string temp = s.substr(start, len);
+
+        //         int ones = 0;
+        //         for (char ch : temp) {
+        //             if (ch == '1')
+        //                 ones++;
+        //         }
+
+        //         if (ones == k) {
+        //             if (result.empty() || temp < result) {
+        //                 result = temp;  // assignment, not +=
+        //             }
+        //         }
+        //     }
+
+        //     if (!result.empty())
+        //         return result;
+        // }
+
+        // return "";
+
+        class Solution {
+public:
+    string shortestBeautifulSubstring(string s, int k) {
         int n = s.length();
+        int i = 0;
+        int ones = 0;     // number of '1's in window [i, j]
+        string result = "";
 
-        for (int len = k; len <= n; len++) {
-            string result = "";
+        for (int j = 0; j < n; j++) {
+            if (s[j] == '1') 
+                ones++;
 
-            for (int start = 0; start <= n - len; start++) {
-                string temp = s.substr(start, len);
-
-                int ones = 0;
-                for (char ch : temp) {
-                    if (ch == '1')
-                        ones++;
-                }
-
-                if (ones == k) {
-                    if (result.empty() || temp < result) {
-                        result = temp;  // assignment, not +=
-                    }
-                }
+            //remove extra 1's, then trim leading 0's
+            while (ones > k || s[i] == '0') {
+                if (s[i] == '1') 
+                    ones--;
+                i++;
             }
 
-            if (!result.empty())
-                return result;
+            if (ones == k) {
+                string temp = s.substr(i, j - i + 1);
+                if (result.empty()
+                    || j - i + 1 < result.length()
+                    || (j - i + 1 == result.length() && temp < result)) {
+
+                    result = temp;
+                }
+            }
         }
 
-        return "";
+        return result;
+    }
+};
     }
 };
