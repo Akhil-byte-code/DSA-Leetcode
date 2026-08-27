@@ -1,56 +1,47 @@
 class Solution {
 public:
+    string result = "";
+
+    bool solve(string& curr , vector<int>& count , string& target , int i , bool greater ){
+        if(i==target.length()){
+            if(greater){
+            result = curr ;
+            return true ;
+        }
+        return false ;
+        }
+
+        for(char ch='a';ch<='z';ch++){
+            if(count[ch-'a']==0)
+              continue ;
+
+            if(greater ==false && ch<target[i])
+              continue ;
+
+            curr.push_back(ch);
+            count[ch-'a']--;
+
+            bool isGreater = greater || ch> target[i];
+
+            if(solve(curr , count , target , i+1 , isGreater )){
+                return true ;
+            }
+            curr.pop_back();
+            count[ch-'a']++;
+        }
+        return false ;
+    }
+
     string lexGreaterPermutation(string s, string target) {
-        vector<int> freq(26, 0);
+      vector<int> count(26,0);
 
-        for (char c : s) {
-            freq[c - 'a']++;
-        }
+      for(char &ch : s)
+        count[ch-'a']++;
 
-        string ans = "";
-        int n = s.size();
+     string curr ;
 
-        // Match target prefix as much as possible
-        for (int i = 0; i < n; i++) {
-            int x = target[i] - 'a';
+     solve(curr , count , target , 0 , false );
 
-            if (freq[x] > 0) {
-                ans += target[i];
-                freq[x]--;
-            } else {
-                break;
-            }
-        }
-
-        // Backtrack from the matched prefix
-        while (true) {
-            int pos = ans.size();
-
-            // Try to place the smallest character > target[pos]
-            if (pos < n) {
-                int x = target[pos] - 'a';
-
-                for (int c = x + 1; c < 26; c++) {
-                    if (freq[c] > 0) {
-                        string result = ans;
-                        result += char('a' + c);
-                        freq[c]--;
-
-                        for (int j = 0; j < 26; j++) {
-                            result.append(freq[j], char('a' + j));
-                        }
-
-                        return result;
-                    }
-                }
-            }
-
-            // No greater character possible here, backtrack
-            if (ans.empty()) return "";
-
-            char last = ans.back();
-            ans.pop_back();
-            freq[last - 'a']++;
-        }
+     return result ;
     }
 };
