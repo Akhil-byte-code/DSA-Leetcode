@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int minimumChanges(string s, int k) {
+        int n = s.size();
+        const int INF = 1e9;
+
+        // cost[i][j] = min changes to make s[i..j] a semi-palindrome
+        vector<vector<int>> cost(n, vector<int>(n, INF));
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int len = j - i + 1;
+                int best = INF;
+                for (int d = 1; d < len; d++) {
+                    if (len % d != 0) continue;
+                    int cnt = len / d;          // elements per group
+                    int c = 0;
+                    for (int g = 0; g < d; g++) {
+                        for (int a = 0, b = cnt - 1; a < b; a++, b--) {
+                            if (s[i + g + a * d] != s[i + g + b * d]) c++;
+                        }
+                    }
+                    best = min(best, c);
+                }
+                cost[i][j] = best;
+            }
+        }
+
+        // dp[p][j] = min changes for first p chars into j pieces
+        vector<vector<int>> dp(n + 1, vector<int>(k + 1, INF));
+        dp[0][0] = 0;
+        for (int p = 2; p <= n; p++) {
+            for (int j = 1; j <= k; j++) {
+                for (int q = 2 * (j - 1); q <= p - 2; q++) {
+                    if (dp[q][j - 1] == INF) continue;
+                    dp[p][j] = min(dp[p][j], dp[q][j - 1] + cost[q][p - 1]);
+                }
+            }
+        }
+        return dp[n][k];
+    }
+};
